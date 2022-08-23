@@ -11,10 +11,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Git Fetch
-      shell: bash
-      run: git fetch origin
-
     - name: Delete merged branches
       shell: bash
       # run: git branch --remotes --merged | (grep -o 'releases/sandbox/.*' || true) | xargs -I % git push origin --delete %
@@ -23,6 +19,7 @@ runs:
         IFS=$'\n'
         for branchToCheck in $branchesToCheck
         do
+          git fetch origin $branchToCheck
           diffStat=$(git diff --shortstat head..origin/$branchToCheck)
           if [[ -z "$diffStat" ]]
           then
