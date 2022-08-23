@@ -30,5 +30,6 @@ runs:
             # git push origin --delete $branchToCheck
           else
             echo "SKIPPING $branchToCheck  - $diffStat)"
+          fi
         done
         unset IFS
