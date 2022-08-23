@@ -1,0 +1,34 @@
+name: Delete Merged Branches
+description: A GitHub action to delete branches that have been merged in git
+branding:
+  icon: check-circle
+  color: green
+inputs:
+  branch-filter:
+    description: Only merge branches matching the filter (grep)
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Git Fetch
+      shell: bash
+      run: git fetch origin
+
+    - name: Delete merged branches
+      shell: bash
+      # run: git branch --remotes --merged | (grep -o 'releases/sandbox/.*' || true) | xargs -I % git push origin --delete %
+      run: |
+        branchesToCheck=$(git ls-remote --heads | awk '{print $2}' | sed 's|refs/heads/||g' | (grep '${{ inputs.branch-filter }}' || true))
+        IFS=$'\n'
+        for branchToCheck in $branchesToCheck
+        do
+          diffStat=$(git diff --shortstat head..origin/$branchToCheck)
+          if [[ -z "$diffStat" ]]
+          then
+            echo "DELETING $branchToCheck"
+            # git push origin --delete $branchToCheck
+          else
+            echo "SKIPPING $branchToCheck  - $diffStat)"
+        done
+        unset IFS
