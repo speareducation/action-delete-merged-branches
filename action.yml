@@ -20,7 +20,7 @@ runs:
         for branchToCheck in $branchesToCheck
         do
           git fetch origin "${branchToCheck}"
-          diffStat=$(git diff --no-color --shortstat head...origin/${branchToCheck})
+          diffStat=$(git diff --no-color --shortstat head...origin/${branchToCheck} -- .)
           if [[ -z "$diffStat" ]]
           then
             echo "DELETING $branchToCheck"
