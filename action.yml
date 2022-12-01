@@ -19,14 +19,14 @@ runs:
         IFS=$'\n'
         for branchToCheck in $branchesToCheck
         do
-          git fetch origin "$branchToCheck"
-          diffStat=$(git diff --no-color --shortstat head..."origin/$branchToCheck")
+          git fetch origin "${branchToCheck}"
+          diffStat=$(git diff --no-color --shortstat head...origin/${branchToCheck})
           if [[ -z "$diffStat" ]]
           then
             echo "DELETING $branchToCheck"
-            git push origin --delete $branchToCheck
+            git push origin --delete "${branchToCheck}"
           else
-            echo "SKIPPING $branchToCheck  - $diffStat)"
+            echo "SKIPPING $branchToCheck - $diffStat)"
           fi
         done
         unset IFS
