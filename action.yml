@@ -13,20 +13,20 @@ runs:
   steps:
     - name: Delete merged branches
       shell: bash
-      # run: git branch --remotes --merged | (grep -o 'releases/sandbox/.*' || true) | xargs -I % git push origin --delete %
-      run: |
-        branchesToCheck=$(git ls-remote --heads | awk '{print $2}' | sed 's|refs/heads/||g' | (grep '${{ inputs.branch-filter }}' || true))
-        IFS=$'\n'
-        for branchToCheck in $branchesToCheck
-        do
-          git fetch origin "${branchToCheck}"
-          diffStat=$(git diff --no-color --shortstat origin/head...origin/${branchToCheck} -- .)
-          if [[ -z "$diffStat" ]]
-          then
-            echo "DELETING $branchToCheck"
-            git push origin --delete "${branchToCheck}"
-          else
-            echo "SKIPPING $branchToCheck - $diffStat)"
-          fi
-        done
-        unset IFS
+      run: git branch --remotes --merged | (grep -o '${{ inputs.branch-filter }}' || true) | xargs -I % git push origin --delete %
+      # run: |
+      #   branchesToCheck=$(git ls-remote --heads | awk '{print $2}' | sed 's|refs/heads/||g' | (grep '${{ inputs.branch-filter }}' || true))
+      #   IFS=$'\n'
+      #   for branchToCheck in $branchesToCheck
+      #   do
+      #     git fetch origin "${branchToCheck}"
+      #     diffStat=$(git diff --no-color --shortstat origin/head...origin/${branchToCheck} -- .)
+      #     if [[ -z "$diffStat" ]]
+      #     then
+      #       echo "DELETING $branchToCheck"
+      #       git push origin --delete "${branchToCheck}"
+      #     else
+      #       echo "SKIPPING $branchToCheck - $diffStat)"
+      #     fi
+      #   done
+      #   unset IFS
